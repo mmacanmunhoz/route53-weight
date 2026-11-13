@@ -1,22 +1,37 @@
 # Copie para records.yaml e ajuste.
-# Regiao padrao dos load balancers (pode ser sobreposta por registro ou por alvo).
-region: us-east-1
+
+region: us-east-1               # regiao padrao dos ALBs
+profile: conta-apps             # profile da AWS da conta onde ficam os load balancers
+dns_profile: conta-dns          # profile da conta onde fica a hosted zone (omita se for a mesma conta)
+
+# Teste que o comando `check` faz em cada ALB (e que roda antes de dar trafego a um alvo).
+check:
+  path: /health                 # default: /
+  # scheme: https               # default
+  # expect: [200]               # default: qualquer 2xx/3xx
 
 records:
   api:                          # apelido usado na linha de comando
     zone: exemplo.com.          # nome da hosted zone (ou use zone_id: Z123...)
     name: api.exemplo.com.
     targets:                    # apelido -> ALB (nome, ARN ou DNS)
-      blue: meu-alb-blue
-      green: meu-alb-green
+      antigo: k8s-app-antigo-0123456789-111111111.us-east-1.elb.amazonaws.com
+      novo: k8s-app-novo-0123456789-222222222.us-east-1.elb.amazonaws.com
 
-  # Exemplo com opcoes extras:
+  # Exemplo com opcoes extras (tudo do topo pode ser sobreposto por registro):
   # app:
   #   zone_id: Z0123456789ABC   # necessario se houver zona publica e privada com o mesmo nome
   #   name: app.exemplo.com.
+  #   dns_profile: dns-outra-conta
   #   evaluate_target_health: true   # default
+  #   check:
+  #     path: /ping
   #   targets:
   #     primario: alb-app-a
   #     secundario:
   #       lb: alb-app-b
   #       region: sa-east-1     # ALB em outra regiao
+  #     terceiro:               # modo direto: sem consultar a API do ELB
+  #       dns: k8s-app-0123456789-333333333.us-east-1.elb.amazonaws.com
+  #       hosted_zone_id: Z35SXDOTRQ7X7K   # us-east-1: ALB Z35SXDOTRQ7X7K, NLB Z26RNL4JYFTOTI
+  #       ipv6: false
