@@ -1,0 +1,22 @@
+# Copie para records.yaml e ajuste.
+# Regiao padrao dos load balancers (pode ser sobreposta por registro ou por alvo).
+region: us-east-1
+
+records:
+  api:                          # apelido usado na linha de comando
+    zone: exemplo.com.          # nome da hosted zone (ou use zone_id: Z123...)
+    name: api.exemplo.com.
+    targets:                    # apelido -> ALB (nome, ARN ou DNS)
+      blue: meu-alb-blue
+      green: meu-alb-green
+
+  # Exemplo com opcoes extras:
+  # app:
+  #   zone_id: Z0123456789ABC   # necessario se houver zona publica e privada com o mesmo nome
+  #   name: app.exemplo.com.
+  #   evaluate_target_health: true   # default
+  #   targets:
+  #     primario: alb-app-a
+  #     secundario:
+  #       lb: alb-app-b
+  #       region: sa-east-1     # ALB em outra regiao
